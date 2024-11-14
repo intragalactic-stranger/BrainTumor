@@ -19,7 +19,7 @@ import os
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
- 
+from dotenv import load_dotenv
  
 
 #email push notification lib
@@ -27,10 +27,10 @@ import smtplib
 from email.mime.text import MIMEText
 import datetime as dt
 app = FastAPI()
-
+load_dotenv()
 
 # Google Gemini API configuration
-os.environ['GOOGLE_API_KEY'] = "AIzaSyBM_I5M5d51BnnbQ4-XLoJ8i3bCOrA1i0E"
+os.environ['GOOGLE_API_KEY'] = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
 
 generation_config = {
@@ -224,7 +224,7 @@ app.add_middleware(
 )
 
 # MongoDB setup
-client = MongoClient("mongodb+srv://vaishnavidhimate:13Db7cK5v4FGABXi@gen-ai-hackathon.zqoif.mongodb.net/")
+client = MongoClient(os.getenv("MONGO_URI"))
 db = client["cancer_detection"]
 patients_collection = db["patients"]
 
@@ -321,14 +321,14 @@ async def classify(
         #email push notification function
 
         def email_script(rep):
-            sender_email = "7738491466sk@gmail.com"
-            app_password = "vpwe nran aeny uizj"
+            sender_email = os.getenv("EMAIL_USER")
+            app_password = os.getenv("EMAIL_PASSWORD")
 
             # Create the email message
             msg = MIMEText(rep)
             msg['Subject'] = "URGENT: Critical Cancer Detection Alert - Immediate Action Required"
             msg['From'] = "AI Cancer Detection System"
-            msg['To'] = "ganeshangcp@gmail.com"
+            msg['To'] = os.getenv("DOCTOR_EMAIL")
 
             # Connect to Gmail's SMTP server
             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
