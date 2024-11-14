@@ -400,9 +400,9 @@ async def read_root():
 # Serve static files
 @app.get("/static/{file_path:path}")
 async def static_files(file_path: str):
-    return FileResponse(os.path.join("./build/static", file_path))
+    return FileResponse(os.path.join("../client/build/static", file_path))
 
-app.mount("/static", StaticFiles(directory="./build/static"), name="static")
+app.mount("/static", StaticFiles(directory="../client/build/static"), name="static")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
